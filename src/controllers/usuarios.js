@@ -67,9 +67,9 @@ export class UsersController {
 
     try {
       const updated = await this.usersModel.update({ mail, name, password, phone, admin }, { where: { id } });
-      if (updated > 0) {
-        res.json({ response: 'Usuario actualizado' });
-      }
+
+      res.json({ response: 'Usuario actualizado' });
+
     }
     catch (e) {
       res.status(500).json({ error: e })

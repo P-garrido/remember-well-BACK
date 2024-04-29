@@ -1,5 +1,7 @@
 import { where } from "sequelize";
-
+import fs from 'fs';
+import path, { dirname } from 'path';
+import { fileURLToPath } from 'url';
 
 
 export class ProductsController {
@@ -46,13 +48,43 @@ export class ProductsController {
     const { name, description, price } = req.body;
 
     try {
-      const updatedProd = await this.productsModel.update({ name, description, price }, { where: { id } });
-      if (updatedProd > 0) {
-        res.json({ response: 'Producto actualizado' })
+
+      console.log(req.files)
+      if (req.files.length != 0) {
+
+        const oldFiles = await this.productFilesModel.findAll({ where: { idProd: id } });
+        if (oldFiles.length != 0) {
+          const __dirname = dirname(fileURLToPath(import.meta.url)); //Busca el nombre del directorio actual
+          for (const file of oldFiles) { //borro cada archivo del servidor
+            const filePath = path.resolve(__dirname, `../public/${file.fileUrl}`);
+            fs.access(filePath, fs.constants.F_OK, async (err) => {
+              if (!err) {
+                // Eliminar el archivo de imagen del servidor
+                fs.unlink(filePath, async (err) => {
+                  if (err) {
+                    return res.status(500).json({ mensaje: 'Error al eliminar el archivo' });
+                  }
+                })
+              }
+            })
+          }
+          await this.productFilesModel.destroy({ where: { idProd: id } }); //borro los archivos de la bd
+        }
+
       }
+
+      const updatedProd = await this.productsModel.update({ name, description, price }, { where: { id } });
+
+      for (const newFile of req.files) {
+
+        await this.productFilesModel.create({ idProd: id, fileUrl: newFile.filename });
+      }
+      res.json({ response: 'Producto actualizado' })
+
     }
     catch (e) {
-      res.status(500).json({ error: e })
+      console.log(e)
+      res.status(500).json({ error: e.message })
     }
   }
 
@@ -67,7 +99,7 @@ export class ProductsController {
       }
     }
     catch (e) {
-      res.status(500).json({ error: e })
+      res.status(500).json({ error: e.message })
     }
 
   }

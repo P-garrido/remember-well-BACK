@@ -11,7 +11,7 @@ export const createProductsRouter = ({ productsModel, productFilesModel }) => {
   const productsController = new ProductsController({ productsModel, productFilesModel });
 
   productsRouter.get('', productsController.getAll);
-  productsRouter.post('', upload.array('files', 5), productsController.create);
+  productsRouter.post('', validateToken, upload.array('files', 5), productsController.create);
   productsRouter.patch('/:id', validateToken, upload.array('files', 5), productsController.update);
   productsRouter.delete('/:id', validateToken, productsController.delete);
 
