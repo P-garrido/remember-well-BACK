@@ -1,5 +1,5 @@
 import { where } from "sequelize";
-
+import { generateToken } from "../middlewares/token.js";
 
 
 export class UsersController {
@@ -27,7 +27,19 @@ export class UsersController {
 
     try {
       const newUser = await this.usersModel.create({ mail, name, password, phone, admin });
-      res.status(201).json(newUser); //FALTA ACTUALIZAR PARA GENERAR EL TOKEN 
+      // res.status(201).json(newUser); //FALTA ACTUALIZAR PARA GENERAR EL TOKEN 
+
+      if (newUser) {
+        const payload = {
+          mail: newUser.mail,
+          password: newUser.password,
+        };
+        const token = generateToken(payload);
+        res.json({ token, newUser });
+      } else {
+        res.status(404).send({ message: 'user not found' });
+      }
+
     }
     catch (e) {
       res.status(500).json({ error: e })
@@ -63,5 +75,31 @@ export class UsersController {
     catch (e) {
       res.status(500).json({ error: e })
     }
+  }
+
+
+  login = async (req, res) => {
+
+    const { mail, password } = req.body;
+    try {
+      const user = await this.usersModel.findOne({ where: { mail, password } });
+
+
+      if (user) {
+        const payload = {
+          mail: mail,
+          password: password,
+        };
+        const token = generateToken(payload);
+        res.json({ token, user });
+      } else {
+        res.status(404).send({ message: 'user not found' });
+      }
+    }
+
+    catch (err) {
+      res.status(500).json({ error: err })
+    }
+
   }
 }
