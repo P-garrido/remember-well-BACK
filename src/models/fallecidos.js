@@ -26,6 +26,10 @@ export const DeceasedModel = sequelize.define('Deceased',
     playlist: {
       type: DataTypes.STRING,
       allowNull: true
+    },
+    profilePicUrl: {
+      type: DataTypes.STRING,
+      allowNull: true
     }
   },
   {

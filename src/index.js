@@ -11,6 +11,7 @@ import { EditionPermitModel } from './models/permisos-edicion.js';
 import { ProductModel } from './models/productos.js';
 import { TributeModel } from './models/tributos.js';
 import sequelize from './models/db.js';
+import { createUsersRouter } from './routes/usuarios.js';
 
 
 const app = express();
@@ -58,6 +59,12 @@ ProductFilesModel.belongsTo(ProductModel, { foreignKey: 'idProd' });
     console.error('Unable to connect to the database:', error);
   }
 })();
+
+
+
+
+//DEFINICIÓN DE RUTAS
+app.use('/users', createUsersRouter({ usersModel: UserModel }))
 
 
 
