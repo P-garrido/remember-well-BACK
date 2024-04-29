@@ -31,10 +31,11 @@ export class ProductsController {
     try {
       const newProd = await this.productsModel.create({ name, description, price });
 
+      const newFiles = [];
       for (const file of req.files) {
-        await this.productFilesModel.create({ idProd: newProd.id, fileUrl: file.filename });
+        newFiles.push(await this.productFilesModel.create({ idProd: newProd.id, fileUrl: file.filename }));
       }
-      res.json(newProd);
+      res.json({ newProd, newFiles });
     }
     catch (e) {
       console.log(e)
@@ -73,7 +74,7 @@ export class ProductsController {
 
       }
 
-      const updatedProd = await this.productsModel.update({ name, description, price }, { where: { id } });
+      await this.productsModel.update({ name, description, price }, { where: { id } });
 
       for (const newFile of req.files) {
 
@@ -93,8 +94,29 @@ export class ProductsController {
     const id = req.params.id;
 
     try {
+      const oldFiles = await this.productFilesModel.findAll({ where: { idProd: id } });
       const deleted = await this.productsModel.destroy({ where: { id } });
       if (deleted > 0) {
+
+
+
+        if (oldFiles.length != 0) {
+          const __dirname = dirname(fileURLToPath(import.meta.url)); //Busca el nombre del directorio actual
+          for (const file of oldFiles) { //borro cada archivo del servidor
+            const filePath = path.resolve(__dirname, `../public/${file.fileUrl}`);
+            fs.access(filePath, fs.constants.F_OK, async (err) => {
+              if (!err) {
+                // Eliminar el archivo de imagen del servidor
+                fs.unlink(filePath, async (err) => {
+                  if (err) {
+                    return res.status(500).json({ mensaje: 'Error al eliminar el archivo' });
+                  }
+                })
+              }
+            })
+          }
+        }
+
         res.json({ response: 'Producto eliminado' });
       }
     }
