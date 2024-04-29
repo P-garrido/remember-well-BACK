@@ -12,6 +12,10 @@ export const CommentModel = sequelize.define('Comment',
     text: {
       type: DataTypes.STRING,
       allowNull: false
+    },
+    stars: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
     }
   },
   {

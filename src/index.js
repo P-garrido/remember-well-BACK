@@ -13,6 +13,8 @@ import { TributeModel } from './models/tributos.js';
 import sequelize from './models/db.js';
 import { createUsersRouter } from './routes/usuarios.js';
 import { createProductsRouter } from './routes/productos.js';
+import { CommentModel } from './models/comentarios.js';
+import { createCommentsRouter } from './routes/comentarios.js';
 
 
 const app = express();
@@ -66,7 +68,8 @@ ProductFilesModel.belongsTo(ProductModel, { foreignKey: 'idProd' });
 
 //DEFINICIÓN DE RUTAS
 app.use('/users', createUsersRouter({ usersModel: UserModel }));
-app.use('/products', createProductsRouter({ productsModel: ProductModel, productFilesModel: ProductFilesModel })); //FALTA LO DE ARCHIVOS
+app.use('/products', createProductsRouter({ productsModel: ProductModel, productFilesModel: ProductFilesModel }));
+app.use('/comments', createCommentsRouter({ commentsModel: CommentModel }));
 
 
 
