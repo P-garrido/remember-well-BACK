@@ -27,7 +27,6 @@ export class UsersController {
 
     try {
       const newUser = await this.usersModel.create({ mail, name, password, phone, admin });
-      // res.status(201).json(newUser); //FALTA ACTUALIZAR PARA GENERAR EL TOKEN 
 
       if (newUser) {
         const payload = {
