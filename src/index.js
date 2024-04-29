@@ -66,7 +66,7 @@ ProductFilesModel.belongsTo(ProductModel, { foreignKey: 'idProd' });
 
 //DEFINICIÓN DE RUTAS
 app.use('/users', createUsersRouter({ usersModel: UserModel }));
-app.use('/products', createProductsRouter({ productsModel: ProductModel }));
+app.use('/products', createProductsRouter({ productsModel: ProductModel, productFilesModel: ProductFilesModel })); //FALTA LO DE ARCHIVOS
 
 
 

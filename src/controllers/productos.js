@@ -4,15 +4,16 @@ import { where } from "sequelize";
 
 export class ProductsController {
 
-  constructor({ productsModel }) {
+  constructor({ productsModel, productFilesModel }) {
     this.productsModel = productsModel;
+    this.productFilesModel = productFilesModel;
   }
 
 
   getAll = async (req, res) => {
 
     try {
-      const products = await this.productsModel.findAll();
+      const products = await this.productsModel.findAll({ include: [{ model: this.productFilesModel }] });
       res.json(products);
     }
     catch (e) {
@@ -27,10 +28,15 @@ export class ProductsController {
 
     try {
       const newProd = await this.productsModel.create({ name, description, price });
+
+      for (const file of req.files) {
+        await this.productFilesModel.create({ idProd: newProd.id, fileUrl: file.filename });
+      }
       res.json(newProd);
     }
     catch (e) {
-      res.status(500).json({ error: e })
+      console.log(e)
+      res.status(500).json({ error: e.message })
     }
   }
 
