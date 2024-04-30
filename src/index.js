@@ -15,6 +15,7 @@ import { createUsersRouter } from './routes/usuarios.js';
 import { createProductsRouter } from './routes/productos.js';
 import { CommentModel } from './models/comentarios.js';
 import { createCommentsRouter } from './routes/comentarios.js';
+import { createOrdersRouter } from './routes/pedidos.js';
 
 
 const app = express();
@@ -70,7 +71,7 @@ ProductFilesModel.belongsTo(ProductModel, { foreignKey: 'idProd' });
 app.use('/users', createUsersRouter({ usersModel: UserModel }));
 app.use('/products', createProductsRouter({ productsModel: ProductModel, productFilesModel: ProductFilesModel }));
 app.use('/comments', createCommentsRouter({ commentsModel: CommentModel }));
-
+app.use('/orders', createOrdersRouter({ ordersModel: OrdersModel }));
 
 
 const port = process.env.PORT;

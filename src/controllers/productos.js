@@ -98,8 +98,6 @@ export class ProductsController {
       const deleted = await this.productsModel.destroy({ where: { id } });
       if (deleted > 0) {
 
-
-
         if (oldFiles.length != 0) {
           const __dirname = dirname(fileURLToPath(import.meta.url)); //Busca el nombre del directorio actual
           for (const file of oldFiles) { //borro cada archivo del servidor
