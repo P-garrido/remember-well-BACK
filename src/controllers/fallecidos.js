@@ -1,5 +1,8 @@
 import { DeceasedFilesModel } from "../models/archivos-fallecido.js";
 import { TributeModel } from "../models/tributos.js";
+import fs from 'fs';
+import path, { dirname } from 'path';
+import { fileURLToPath } from 'url';
 
 
 
@@ -27,11 +30,19 @@ export class DeceasedController {
   create = async (req, res) => {
 
     const { name, deathDate, aboutMe, playlist } = req.body;
-    const profilePicUrl = req.file.filename;
+
 
     try {
-      const newFallecido = await this.deceasedModel.create({ name, deathDate, aboutMe, playlist, profilePicUrl });
-      res.status(201).json(newFallecido);
+      if (req.file) {
+        const profilePicUrl = req.file.filename;
+        const newFallecido = await this.deceasedModel.create({ name, deathDate, aboutMe, playlist, profilePicUrl });
+        res.status(201).json(newFallecido);
+      }
+      else {
+        const newFallecido = await this.deceasedModel.create({ name, deathDate, aboutMe, playlist });
+        res.status(201).json(newFallecido);
+      }
+
     }
     catch (e) {
       res.status(500).json({ error: e.message });
@@ -39,13 +50,42 @@ export class DeceasedController {
   }
 
   delete = async (req, res) => {
-    const id = reeq.params.id;
+    const id = req.params.id;
 
     try {
-      const deleted = await this.deceasedModel.destroy({ where: { id } });
-      if (deleted > 0) {
-        res.json("Perfil eliminado");
+
+      // Buscar el perfil en la base de datos para obtener el nombre del archivo de imagen
+      const fallecido = await this.deceasedModel.findOne({ where: { id } });
+      if (!fallecido) {
+        return res.status(404).json({ message: "Perfil no encontrado" });
       }
+
+      const __dirname = dirname(fileURLToPath(import.meta.url));
+
+      // Ruta del archivo de imagen en el servidor
+      const filePath = path.resolve(__dirname, `../public/${fallecido.profilePicUrl}`);
+
+      // Verificar si el archivo de imagen existe
+      fs.access(filePath, fs.constants.F_OK, async (err) => {
+        if (!err) {
+          // Eliminar el archivo de imagen del servidor
+          fs.unlink(filePath, async (err) => {
+            if (err) {
+              return res.status(500).json({ mensaje: 'Error al eliminar el archivo' });
+            }
+            // Eliminar el producto de la base de datos después de eliminar el archivo
+            await this.deceasedModel.destroy({ where: { id } });
+            res.json({ mensaje: 'Perfil y archivo eliminados correctamente' });
+          });
+        } else {
+          // Si el archivo de imagen no existe, eliminar solo el producto de la base de datos
+          await this.deceasedModel.destroy({ where: { id } });
+          res.json({ mensaje: 'Perfil eliminado correctamente' });
+        }
+      });
+
+
+
     }
     catch (e) {
       res.status(500).json({ error: e.message });
@@ -54,7 +94,7 @@ export class DeceasedController {
 
 
   update = async (req, res) => {
-    const id = reeq.params.id;
+    const id = req.params.id;
     const { name, deathDate, aboutMe, playlist } = req.body;
 
 
@@ -80,11 +120,11 @@ export class DeceasedController {
           }
         });
         const profilePicUrl = req.file.filename;
-        await this.deceasedModel.update({ name, deathDate, aboutMe, playlist, profilePicUrl });
+        await this.deceasedModel.update({ name, deathDate, aboutMe, playlist, profilePicUrl }, { where: { id } });
         res.json("Perfil actualizado");
       }
       else {
-        await this.deceasedModel.update({ name, deathDate, aboutMe, playlist });
+        await this.deceasedModel.update({ name, deathDate, aboutMe, playlist }, { where: { id } });
         res.json("Perfil actualizado");
       }
 

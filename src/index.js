@@ -17,6 +17,7 @@ import { CommentModel } from './models/comentarios.js';
 import { createCommentsRouter } from './routes/comentarios.js';
 import { createOrdersRouter } from './routes/pedidos.js';
 import { createOrderProductRouter } from './routes/linea-pedido.js';
+import { createDeceasedRouter } from './routes/fallecidos.js';
 
 
 const app = express();
@@ -74,6 +75,7 @@ app.use('/products', createProductsRouter({ productsModel: ProductModel, product
 app.use('/comments', createCommentsRouter({ commentsModel: CommentModel }));
 app.use('/orders', createOrdersRouter({ ordersModel: OrdersModel }));
 app.use('/orderProduct', createOrderProductRouter({ orderProductModel: OrderProductsModel }));
+app.use('/deceased', createDeceasedRouter({ deceasedModel: DeceasedModel }));
 
 
 const port = process.env.PORT;
