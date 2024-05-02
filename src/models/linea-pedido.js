@@ -5,15 +5,19 @@ import { DataTypes } from "sequelize";
 export const OrderProductsModel = sequelize.define(
   'OrderProducts',
   {
+    id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true
+    },
     idPed: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      primaryKey: true
     },
     idProd: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      primaryKey: true
     },
     cantidad: {
       type: DataTypes.INTEGER,
