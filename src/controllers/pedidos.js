@@ -1,3 +1,4 @@
+import { ProductFilesModel } from "../models/archivos-producto.js";
 import { OrderProductsModel } from "../models/linea-pedido.js";
 import { ProductModel } from "../models/productos.js";
 
@@ -12,7 +13,7 @@ export class OrdersController {
   getAll = async (req, res) => {
 
     try {
-      const pedidos = await this.ordersModel.findAll({ include: { model: OrderProductsModel } }); //CHEQUEAR Q OP TRAIGA SU PRODUCTO
+      const pedidos = await this.ordersModel.findAll({ include: { model: OrderProductsModel, include: { model: ProductModel, include: { model: ProductFilesModel } } } }); //CHEQUEAR Q OP TRAIGA SU PRODUCTO
       res.json(pedidos);
     }
     catch (e) {
