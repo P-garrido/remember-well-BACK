@@ -19,6 +19,7 @@ import { createOrdersRouter } from './routes/pedidos.js';
 import { createOrderProductRouter } from './routes/linea-pedido.js';
 import { createDeceasedRouter } from './routes/fallecidos.js';
 import { createEditionPermitRouter } from './routes/permisos-edicion.js';
+import { createDeceasedFilesRouter } from './routes/archivos-fallecido.js';
 
 
 const app = express();
@@ -80,6 +81,7 @@ app.use('/orders', createOrdersRouter({ ordersModel: OrdersModel }));
 app.use('/orderProduct', createOrderProductRouter({ orderProductModel: OrderProductsModel }));
 app.use('/deceased', createDeceasedRouter({ deceasedModel: DeceasedModel }));
 app.use('/editionPermit', createEditionPermitRouter({ editionPermitModel: EditionPermitModel })); //VER COMO DAR/REVOCAR PERMISOS
+app.use('/deceasedFiles', createDeceasedFilesRouter({ deceasedFilesModel: DeceasedFilesModel }));
 
 
 const port = process.env.PORT;
