@@ -8,8 +8,8 @@ export const createOrderProductRouter = ({ orderProductModel }) => {
   const orderProductRouter = Router();
   const orderProductController = new OrderProductController({ orderProductModel });
 
-  orderProductRouter.get('', orderProductController.getAll);
-  orderProductRouter.post('', orderProductController.create);
+  orderProductRouter.get('', validateToken, orderProductController.getAll);
+  orderProductRouter.post('', validateToken, orderProductController.create);
 
   return orderProductRouter;
 

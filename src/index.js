@@ -17,6 +17,10 @@ import { CommentModel } from './models/comentarios.js';
 import { createCommentsRouter } from './routes/comentarios.js';
 import { createOrdersRouter } from './routes/pedidos.js';
 import { createOrderProductRouter } from './routes/linea-pedido.js';
+import { createDeceasedRouter } from './routes/fallecidos.js';
+import { createEditionPermitRouter } from './routes/permisos-edicion.js';
+import { createDeceasedFilesRouter } from './routes/archivos-fallecido.js';
+import { createTribureRouter } from './routes/tributos.js';
 
 
 const app = express();
@@ -31,7 +35,7 @@ config();
 UserModel.hasMany(OrdersModel, { foreignKey: 'idUser', onDelete: 'CASCADE' });
 OrdersModel.belongsTo(UserModel, { foreignKey: 'idUser' });
 
-UserModel.belongsToMany(DeceasedModel, { through: EditionPermitModel, foreignKey: 'idUsu', onDelete: 'CASCADE' });
+UserModel.belongsToMany(DeceasedModel, { through: EditionPermitModel, foreignKey: 'idUsu' });
 DeceasedModel.belongsToMany(UserModel, { through: EditionPermitModel, foreignKey: 'idFall' });
 
 DeceasedModel.hasMany(DeceasedFilesModel, { foreignKey: 'idFall', onDelete: 'CASCADE' });
@@ -48,6 +52,8 @@ OrderProductsModel.belongsTo(ProductModel, { foreignKey: 'idProd' });
 
 ProductModel.hasMany(ProductFilesModel, { foreignKey: 'idProd', onDelete: 'CASCADE' });
 ProductFilesModel.belongsTo(ProductModel, { foreignKey: 'idProd' });
+
+
 
 
 
@@ -74,10 +80,16 @@ app.use('/products', createProductsRouter({ productsModel: ProductModel, product
 app.use('/comments', createCommentsRouter({ commentsModel: CommentModel }));
 app.use('/orders', createOrdersRouter({ ordersModel: OrdersModel }));
 app.use('/orderProduct', createOrderProductRouter({ orderProductModel: OrderProductsModel }));
+app.use('/deceased', createDeceasedRouter({ deceasedModel: DeceasedModel }));
+app.use('/editionPermit', createEditionPermitRouter({ editionPermitModel: EditionPermitModel })); //VER COMO DAR/REVOCAR PERMISOS
+app.use('/deceasedFiles', createDeceasedFilesRouter({ deceasedFilesModel: DeceasedFilesModel }));
+app.use('/tributes', createTribureRouter({ tributeModel: TributeModel }));
+
 
 
 const port = process.env.PORT;
 
+//INICIO DE SERVIDOR
 app.listen(port, () => {
   console.log("app listening on port", port)
 });

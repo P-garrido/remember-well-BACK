@@ -1,5 +1,9 @@
 import { where } from "sequelize";
 import { generateToken } from "../middlewares/token.js";
+import { DeceasedModel } from "../models/fallecidos.js";
+import { DeceasedFilesModel } from "../models/archivos-fallecido.js";
+import { TributeModel } from "../models/tributos.js";
+import { UserModel } from "../models/usuarios.js";
 
 
 export class UsersController {
@@ -11,12 +15,12 @@ export class UsersController {
   getAll = async (req, res) => {
 
     try {
-      const usuarios = await this.usersModel.findAll();
+      const usuarios = await this.usersModel.findAll({ include: { model: DeceasedModel, include: [{ model: DeceasedFilesModel }, { model: UserModel }, { model: TributeModel }] } });
 
       res.json(usuarios)
     }
     catch (e) {
-      res.status(500).json({ error: e })
+      res.status(500).json({ error: e.message })
     }
   }
 
