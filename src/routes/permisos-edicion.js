@@ -1,5 +1,6 @@
 import { EditionPermitController } from "../controllers/permisos-edicion.js";
 import { Router } from "express";
+import { validateToken } from "../middlewares/token.js";
 
 export const createEditionPermitRouter = ({ editionPermitModel }) => {
 
@@ -7,9 +8,9 @@ export const createEditionPermitRouter = ({ editionPermitModel }) => {
   const editionPermitController = new EditionPermitController({ editionPermitModel });
 
 
-  editionPermitRouter.get('/:idUser', editionPermitController.getByUser)
-  editionPermitRouter.post('/', editionPermitController.create);
-  editionPermitRouter.delete('/:id', editionPermitController.delete);
+  editionPermitRouter.get('/:idUser', validateToken, editionPermitController.getByUser)
+  editionPermitRouter.post('/', validateToken, editionPermitController.create);
+  editionPermitRouter.delete('/:id', validateToken, editionPermitController.delete);
 
 
   return editionPermitRouter;

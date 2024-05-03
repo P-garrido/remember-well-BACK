@@ -11,6 +11,10 @@ export const DeceasedModel = sequelize.define('Deceased',
       allowNull: false,
       primaryKey: true
     },
+    idOwner: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
     name: {
       type: DataTypes.STRING,
       allowNull: true

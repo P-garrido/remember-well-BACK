@@ -29,17 +29,17 @@ export class DeceasedController {
 
   create = async (req, res) => {
 
-    const { name, deathDate, aboutMe, playlist } = req.body;
+    const { idOwner, name, deathDate, aboutMe, playlist } = req.body;
 
 
     try {
       if (req.file) {
         const profilePicUrl = req.file.filename;
-        const newFallecido = await this.deceasedModel.create({ name, deathDate, aboutMe, playlist, profilePicUrl });
+        const newFallecido = await this.deceasedModel.create({ idOwner, name, deathDate, aboutMe, playlist, profilePicUrl });
         res.status(201).json(newFallecido);
       }
       else {
-        const newFallecido = await this.deceasedModel.create({ name, deathDate, aboutMe, playlist });
+        const newFallecido = await this.deceasedModel.create({ idOwner, name, deathDate, aboutMe, playlist });
         res.status(201).json(newFallecido);
       }
 
