@@ -20,6 +20,7 @@ import { createOrderProductRouter } from './routes/linea-pedido.js';
 import { createDeceasedRouter } from './routes/fallecidos.js';
 import { createEditionPermitRouter } from './routes/permisos-edicion.js';
 import { createDeceasedFilesRouter } from './routes/archivos-fallecido.js';
+import { createTribureRouter } from './routes/tributos.js';
 
 
 const app = express();
@@ -82,10 +83,13 @@ app.use('/orderProduct', createOrderProductRouter({ orderProductModel: OrderProd
 app.use('/deceased', createDeceasedRouter({ deceasedModel: DeceasedModel }));
 app.use('/editionPermit', createEditionPermitRouter({ editionPermitModel: EditionPermitModel })); //VER COMO DAR/REVOCAR PERMISOS
 app.use('/deceasedFiles', createDeceasedFilesRouter({ deceasedFilesModel: DeceasedFilesModel }));
+app.use('/tributes', createTribureRouter({ tributeModel: TributeModel }));
+
 
 
 const port = process.env.PORT;
 
+//INICIO DE SERVIDOR
 app.listen(port, () => {
   console.log("app listening on port", port)
 });
