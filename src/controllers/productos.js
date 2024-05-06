@@ -33,7 +33,7 @@ export class ProductsController {
 
       const newFiles = [];
       for (const file of req.files) {
-        newFiles.push(await this.productFilesModel.create({ idProd: newProd.id, fileUrl: file.filename }));
+        newFiles.push(await this.productFilesModel.create({ idProd: newProd.id, fileUrl: `http://localhost:3000/images/${file.filename}` }));
       }
       res.json({ newProd, newFiles });
     }
