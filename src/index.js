@@ -36,6 +36,9 @@ config();
 UserModel.hasMany(OrdersModel, { foreignKey: 'idUser', onDelete: 'CASCADE' });
 OrdersModel.belongsTo(UserModel, { foreignKey: 'idUser' });
 
+UserModel.hasMany(CommentModel, { foreignKey: 'idUser', onDelete: 'CASCADE' });
+CommentModel.belongsTo(UserModel, { foreignKey: 'idUser' });
+
 UserModel.belongsToMany(DeceasedModel, { through: EditionPermitModel, foreignKey: 'idUsu' });
 DeceasedModel.belongsToMany(UserModel, { through: EditionPermitModel, foreignKey: 'idFall' });
 

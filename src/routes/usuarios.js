@@ -10,10 +10,11 @@ export const createUsersRouter = ({ usersModel }) => {
   const usersController = new UsersController({ usersModel });
 
   usersRouter.get('/', validateToken, usersController.getAll);
+  usersRouter.get('/:id', validateToken, usersController.getOne);
   usersRouter.post('/', usersController.create);
   usersRouter.patch('/:id', validateToken, usersController.update);
   usersRouter.delete('/:id', validateToken, usersController.delete);
-  usersRouter.get('/login', usersController.login);
+  usersRouter.post('/login', usersController.login);
 
 
   return usersRouter

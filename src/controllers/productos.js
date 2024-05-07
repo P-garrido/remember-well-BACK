@@ -16,9 +16,28 @@ export class ProductsController {
 
     try {
       const products = await this.productsModel.findAll({ include: [{ model: this.productFilesModel }] });
-      res.json(products);
+
+      const productsWithFiles = products.map(product => {
+        let prodFiles = [];
+        product.ProductFiles.forEach(pf => {
+          prodFiles.push({
+            id: pf.id,
+            idProd: pf.idProd,
+            fileUrl: `http://localhost:3000/images/${pf.fileUrl}`
+          })
+        })
+        return {
+          id: product.id,
+          name: product.name,
+          description: product.description,
+          price: product.price,
+          ProductFiles: prodFiles
+        }
+      })
+      res.json(productsWithFiles);
     }
     catch (e) {
+      console.log(e)
       res.status(500).json({ error: e })
     }
   }
@@ -33,7 +52,7 @@ export class ProductsController {
 
       const newFiles = [];
       for (const file of req.files) {
-        newFiles.push(await this.productFilesModel.create({ idProd: newProd.id, fileUrl: `http://localhost:3000/images/${file.filename}` }));
+        newFiles.push(await this.productFilesModel.create({ idProd: newProd.id, fileUrl: file.filename }));
       }
       res.json({ newProd, newFiles });
     }
@@ -50,7 +69,6 @@ export class ProductsController {
 
     try {
 
-      console.log(req.files)
       if (req.files.length != 0) {
 
         const oldFiles = await this.productFilesModel.findAll({ where: { idProd: id } });

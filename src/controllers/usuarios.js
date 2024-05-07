@@ -24,6 +24,19 @@ export class UsersController {
     }
   }
 
+  getOne = async (req, res) => {
+    const id = req.params.id;
+
+    try {
+      const usuario = await this.usersModel.findOne({ where: { id } }, { include: { model: DeceasedModel, include: [{ model: DeceasedFilesModel }, { model: UserModel }, { model: TributeModel }] } });
+
+      res.json(usuario)
+    }
+    catch (e) {
+      res.status(500).json({ error: e.message })
+    }
+  }
+
 
   create = async (req, res) => {
 
@@ -70,7 +83,7 @@ export class UsersController {
     const { mail, name, password, phone, admin } = req.body;
 
     try {
-      const updated = await this.usersModel.update({ mail, name, password, phone, admin }, { where: { id } });
+      await this.usersModel.update({ mail, name, password, phone, admin }, { where: { id } });
 
       res.json({ response: 'Usuario actualizado' });
 
@@ -85,7 +98,7 @@ export class UsersController {
 
     const { mail, password } = req.body;
     try {
-      const user = await this.usersModel.findOne({ where: { mail, password } });
+      const user = await this.usersModel.findOne({ where: { mail, password } }, { include: { model: DeceasedModel } });
 
 
       if (user) {

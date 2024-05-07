@@ -1,4 +1,5 @@
 import { where } from "sequelize";
+import { UserModel } from "../models/usuarios.js";
 
 
 
@@ -11,7 +12,7 @@ export class CommentsController {
   getAll = async (req, res) => {
 
     try {
-      const comments = await this.commentsModel.findAll();
+      const comments = await this.commentsModel.findAll({ include: { model: UserModel } });
       res.json(comments);
     }
     catch (e) {
@@ -21,12 +22,11 @@ export class CommentsController {
 
 
   create = async (req, res) => {
-
-    const { text, stars } = req.body;
+    const { text, stars, idUser } = req.body;
 
     try {
 
-      const newComment = await this.commentsModel.create({ text, stars });
+      const newComment = await this.commentsModel.create({ text, stars, idUser });
       res.json(newComment)
     }
     catch (e) {
