@@ -2,6 +2,7 @@ import { DeceasedFilesModel } from "../models/archivos-fallecido.js";
 import { TributeModel } from "../models/tributos.js";
 import fs from 'fs';
 import path, { dirname } from 'path';
+import { where } from "sequelize";
 import { fileURLToPath } from 'url';
 
 
@@ -18,6 +19,19 @@ export class DeceasedController {
     try {
       const fallecidos = await this.deceasedModel.findAll({ include: [{ model: DeceasedFilesModel }, { model: TributeModel }] });
       res.json(fallecidos);
+    }
+    catch (e) {
+      res.status(500).json({ error: e.message });
+    }
+  }
+
+
+  getById = async (req, res) => {
+    const id = req.params.id;
+
+    try {
+      const fallecido = await this.deceasedModel.findOne({ include: [{ model: DeceasedFilesModel }, { model: TributeModel }] }, { where: { id } });
+      res.json(fallecido);
     }
     catch (e) {
       res.status(500).json({ error: e.message });
