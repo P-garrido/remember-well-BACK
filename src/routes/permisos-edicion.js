@@ -15,3 +15,4 @@ export const createEditionPermitRouter = ({ editionPermitModel }) => {
 
   return editionPermitRouter;
 }
+

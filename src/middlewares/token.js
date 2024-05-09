@@ -7,7 +7,7 @@ const jwt = pkg;
 const secret = process.env.SECRET;
 
 export const generateToken = (user) => {
-  return jwt.sign(user, secret, { expiresIn: '20m' });  //CORREGIR LO DE QUE NO PUEDO LEER VARIABLES DE ENTORNO
+  return jwt.sign(user, secret, { expiresIn: '20m' });
 };
 
 export const validateToken = (req, res, next) => {

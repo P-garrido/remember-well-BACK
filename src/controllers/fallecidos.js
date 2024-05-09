@@ -26,6 +26,7 @@ export class DeceasedController {
   }
 
 
+
   getById = async (req, res) => {
     const id = req.params.id;
 
@@ -55,6 +56,10 @@ export class DeceasedController {
     catch (e) {
       res.status(500).json({ error: e.message });
     }
+  }
+
+  getByUser = async (req, res) => {
+    const id = req.params.id;
   }
 
 
