@@ -15,7 +15,7 @@ export class UsersController {
   getAll = async (req, res) => {
 
     try {
-      const usuarios = await this.usersModel.findAll({ include: { model: DeceasedModel } });
+      const usuarios = await this.usersModel.findAll({ include: { model: DeceasedModel, include: [{ model: DeceasedFilesModel }, { model: TributeModel }] } });
 
       res.json(usuarios)
     }
@@ -98,8 +98,7 @@ export class UsersController {
 
     const { mail, password } = req.body;
     try {
-      const user = await this.usersModel.findOne({ include: { model: DeceasedModel } }, { where: { mail, password } });
-
+      const user = await this.usersModel.findOne({ include: { model: DeceasedModel, include: [{ model: DeceasedFilesModel }, { model: TributeModel }] }, where: { mail, password } });
 
       if (user) {
         const payload = {
