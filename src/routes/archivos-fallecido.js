@@ -10,7 +10,7 @@ export const createDeceasedFilesRouter = ({ deceasedFilesModel }) => {
   const deceasedFilesController = new DeceasedFilesController({ deceasedFilesModel });
 
 
-  deceasedFilesRouter.post('', validateToken, upload.single('file'), deceasedFilesController.create);
+  deceasedFilesRouter.post('', validateToken, upload.array('files', 20), deceasedFilesController.create);
   deceasedFilesRouter.delete('/:id', validateToken, deceasedFilesController.delete);
 
   return deceasedFilesRouter

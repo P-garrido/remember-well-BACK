@@ -12,12 +12,14 @@ export class DeceasedFilesController {
 
 
   create = async (req, res) => {
-    const fileUrl = req.file.filename;
     const { idFall } = req.body;
 
     try {
-      const newArchivo = await this.deceasedFilesModel.create({ idFall, fileUrl });
-      res.status(201).json(newArchivo);
+      const newFiles = [];
+      for (const file of req.files) {
+        newFiles.push(await this.deceasedFilesModel.create({ idFall, fileUrl: file.filename }));
+      }
+      res.status(201).json(newFiles);
     }
     catch (e) {
       res.status(500).json({ error: e.message });

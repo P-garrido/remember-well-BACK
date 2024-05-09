@@ -31,7 +31,26 @@ export class DeceasedController {
 
     try {
       const fallecido = await this.deceasedModel.findOne({ include: [{ model: DeceasedFilesModel }, { model: TributeModel }] }, { where: { id } });
-      res.json(fallecido);
+      let deceasedFiles = [];
+      fallecido.DeceasedFiles.forEach((df) => {
+        deceasedFiles.push({
+          id: df.id,
+          idFall: df.idFall,
+          fileUrl: `http://localhost:3000/images/${df.fileUrl}`
+        })
+      })
+      const fallecidoWithProfilePic = {
+        id: fallecido.id,
+        idOwner: fallecido.idOwner,
+        name: fallecido.name,
+        deathDate: fallecido.deathDate,
+        aboutMe: fallecido.aboutMe,
+        playlist: fallecido.playlist,
+        profilePicUrl: `http://localhost:3000/images/${fallecido.profilePicUrl}`,
+        DeceasedFiles: deceasedFiles,
+        Tributes: fallecido.Tributes
+      }
+      res.json(fallecidoWithProfilePic);
     }
     catch (e) {
       res.status(500).json({ error: e.message });
