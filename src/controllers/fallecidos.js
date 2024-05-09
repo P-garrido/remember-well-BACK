@@ -1,4 +1,5 @@
 import { DeceasedFilesModel } from "../models/archivos-fallecido.js";
+import { UserModel } from "../models/usuarios.js";
 import { TributeModel } from "../models/tributos.js";
 import fs from 'fs';
 import path, { dirname } from 'path';
@@ -9,8 +10,9 @@ import { fileURLToPath } from 'url';
 
 export class DeceasedController {
 
-  constructor({ deceasedModel }) {
+  constructor({ deceasedModel, usersModel }) {
     this.deceasedModel = deceasedModel;
+    this.usersModel = usersModel;
   }
 
 
@@ -58,31 +60,30 @@ export class DeceasedController {
     }
   }
 
-  getByUser = async (req, res) => {
-    const id = req.params.id;
-  }
+  // getByUser = async (req, res) => {
+  //   const id = req.params.id;
+  // }
 
 
 
 
   create = async (req, res) => {
 
-    const { idOwner, name, deathDate, aboutMe, playlist } = req.body;
+    const { idOwner, name, deathDate, aboutMe, playlist, profilePicUrl } = req.body;
 
 
     try {
-      if (req.file) {
-        const profilePicUrl = req.file.filename;
-        const newFallecido = await this.deceasedModel.create({ idOwner, name, deathDate, aboutMe, playlist, profilePicUrl });
-        res.status(201).json(newFallecido);
-      }
-      else {
-        const newFallecido = await this.deceasedModel.create({ idOwner, name, deathDate, aboutMe, playlist });
-        res.status(201).json(newFallecido);
-      }
+      const owner = await UserModel.findOne({ where: { id: idOwner } });
+      console.log(owner)
+      const newFallecido = await this.deceasedModel.create({ idOwner, name, deathDate, aboutMe, playlist, profilePicUrl });
+
+      newFallecido.addUser(owner);
+      res.status(201).json(newFallecido);
+
 
     }
     catch (e) {
+      console.log(e)
       res.status(500).json({ error: e.message });
     }
   }

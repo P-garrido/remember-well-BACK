@@ -15,7 +15,7 @@ export class UsersController {
   getAll = async (req, res) => {
 
     try {
-      const usuarios = await this.usersModel.findAll();
+      const usuarios = await this.usersModel.findAll({ include: { model: DeceasedModel } });
 
       res.json(usuarios)
     }
