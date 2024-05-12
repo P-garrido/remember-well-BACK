@@ -33,7 +33,7 @@ export class DeceasedController {
     const id = req.params.id;
 
     try {
-      const fallecido = await this.deceasedModel.findOne({ include: [{ model: DeceasedFilesModel }, { model: TributeModel }] }, { where: { id } });
+      const fallecido = await this.deceasedModel.findOne({ include: [{ model: DeceasedFilesModel }, { model: TributeModel }, { model: UserModel }] }, { where: { id } });
       let deceasedFiles = [];
       fallecido.DeceasedFiles.forEach((df) => {
         deceasedFiles.push({
@@ -51,7 +51,8 @@ export class DeceasedController {
         playlist: fallecido.playlist,
         profilePicUrl: `http://localhost:3000/images/${fallecido.profilePicUrl}`,
         DeceasedFiles: deceasedFiles,
-        Tributes: fallecido.Tributes
+        Tributes: fallecido.Tributes,
+        Users: fallecido.Users
       }
       res.json(fallecidoWithProfilePic);
     }
@@ -59,6 +60,7 @@ export class DeceasedController {
       res.status(500).json({ error: e.message });
     }
   }
+
 
 
   addEditor = async (req, res) => {

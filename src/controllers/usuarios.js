@@ -1,4 +1,4 @@
-import { where } from "sequelize";
+import { where, Op } from "sequelize";
 import { generateToken } from "../middlewares/token.js";
 import { DeceasedModel } from "../models/fallecidos.js";
 import { DeceasedFilesModel } from "../models/archivos-fallecido.js";
@@ -36,6 +36,9 @@ export class UsersController {
       res.status(500).json({ error: e.message })
     }
   }
+
+
+
 
 
   create = async (req, res) => {
@@ -98,7 +101,7 @@ export class UsersController {
 
     const { mail, password } = req.body;
     try {
-      const user = await this.usersModel.findOne({ include: { model: DeceasedModel, include: [{ model: DeceasedFilesModel }, { model: TributeModel }] }, where: { mail, password } });
+      const user = await this.usersModel.findOne({ include: { model: DeceasedModel, include: [{ model: DeceasedFilesModel }, { model: UserModel }, { model: TributeModel }] }, where: { mail, password } });
 
       if (user) {
         const payload = {
