@@ -14,6 +14,8 @@ export const createDeceasedRouter = ({ deceasedModel }) => {
   deceasedRouter.post('', validateToken, upload.single('file'), deceasedController.create);
   deceasedRouter.patch('/:id', validateToken, upload.single('file'), deceasedController.update);
   deceasedRouter.delete('/:id', validateToken, deceasedController.delete);
+  deceasedRouter.post('/editors', validateToken, deceasedController.addEditor);
+  deceasedRouter.delete('/editors/:idFall/:idUsu', validateToken, deceasedController.removeEditor);
 
   return deceasedRouter
 }

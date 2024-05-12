@@ -60,9 +60,36 @@ export class DeceasedController {
     }
   }
 
-  // getByUser = async (req, res) => {
-  //   const id = req.params.id;
-  // }
+
+  addEditor = async (req, res) => {
+    const { mail, idFall } = req.body;
+
+    try {
+      const usu = await this.usersModel.findOne({ where: { mail } });
+      const fall = await this.deceasedModel.findByPk({ id: idFall });
+      fall.addUser(usu);
+      res.json({ response: 'Editor agregado' })
+    }
+    catch (e) {
+      res.status(500).json({ error: e.message });
+    }
+  }
+
+
+  removeEditor = async (req, res) => {
+    const idFall = req.params.idFall;
+    const idUsu = req.params.idUsu;
+
+    try {
+      const usu = await this.usersModel.findByPk({ id: idUsu });
+      const fall = await this.deceasedModel.findByPk({ id: idFall });
+      fall.removeUser(usu);
+      res.json({ response: 'Editor eliminado' })
+    }
+    catch (e) {
+      res.status(500).json({ error: e.message });
+    }
+  }
 
 
 
@@ -74,7 +101,6 @@ export class DeceasedController {
 
     try {
       const owner = await UserModel.findOne({ where: { id: idOwner } });
-      console.log(owner)
       const newFallecido = await this.deceasedModel.create({ idOwner, name, deathDate, aboutMe, playlist, profilePicUrl });
 
       newFallecido.addUser(owner);
