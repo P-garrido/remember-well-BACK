@@ -33,15 +33,18 @@ export class DeceasedController {
     const id = req.params.id;
 
     try {
-      const fallecido = await this.deceasedModel.findOne({ include: [{ model: DeceasedFilesModel }, { model: TributeModel }, { model: UserModel }] }, { where: { id } });
+      const fallecido = await this.deceasedModel.findOne({ where: { id }, include: [{ model: DeceasedFilesModel }, { model: TributeModel }, { model: UserModel }] });
       let deceasedFiles = [];
-      fallecido.DeceasedFiles.forEach((df) => {
-        deceasedFiles.push({
-          id: df.id,
-          idFall: df.idFall,
-          fileUrl: `http://localhost:3000/images/${df.fileUrl}`
+      if (fallecido.DeceasedFiles) {
+        fallecido.DeceasedFiles.forEach((df) => {
+          deceasedFiles.push({
+            id: df.id,
+            idFall: df.idFall,
+            fileUrl: `http://localhost:3000/images/${df.fileUrl}`
+          })
         })
-      })
+      }
+
       const fallecidoWithProfilePic = {
         id: fallecido.id,
         idOwner: fallecido.idOwner,
@@ -68,11 +71,12 @@ export class DeceasedController {
 
     try {
       const usu = await this.usersModel.findOne({ where: { mail } });
-      const fall = await this.deceasedModel.findByPk({ id: idFall });
+      const fall = await this.deceasedModel.findOne({ where: { id: idFall } });
       fall.addUser(usu);
       res.json({ response: 'Editor agregado' })
     }
     catch (e) {
+      console.log(e)
       res.status(500).json({ error: e.message });
     }
   }
@@ -162,7 +166,11 @@ export class DeceasedController {
 
   update = async (req, res) => {
     const id = req.params.id;
-    const { name, deathDate, aboutMe, playlist } = req.body;
+    let { name, deathDate, aboutMe, playlist } = req.body;
+
+    if (!deathDate) {
+      deathDate = new Date();
+    }
 
 
     try {

@@ -4,13 +4,13 @@ import { Router } from "express"
 import { validateToken } from "../middlewares/token.js";
 
 
-export const createDeceasedRouter = ({ deceasedModel }) => {
+export const createDeceasedRouter = ({ deceasedModel, usersModel }) => {
 
   const deceasedRouter = Router();
-  const deceasedController = new DeceasedController({ deceasedModel });
+  const deceasedController = new DeceasedController({ deceasedModel, usersModel });
 
   deceasedRouter.get('', validateToken, deceasedController.getAll);
-  deceasedRouter.get('/:id', validateToken, deceasedController.getById);
+  deceasedRouter.get('/:id', deceasedController.getById);
   deceasedRouter.post('', validateToken, upload.single('file'), deceasedController.create);
   deceasedRouter.patch('/:id', validateToken, upload.single('file'), deceasedController.update);
   deceasedRouter.delete('/:id', validateToken, deceasedController.delete);

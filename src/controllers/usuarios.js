@@ -28,7 +28,7 @@ export class UsersController {
     const id = req.params.id;
 
     try {
-      const usuario = await this.usersModel.findOne({ include: { model: DeceasedModel, include: [{ model: DeceasedFilesModel }, { model: UserModel }, { model: TributeModel }] } }, { where: { id } });
+      const usuario = await this.usersModel.findOne({ where: { id }, include: { model: DeceasedModel, include: [{ model: DeceasedFilesModel }, { model: UserModel }, { model: TributeModel }] } });
 
       res.json(usuario)
     }

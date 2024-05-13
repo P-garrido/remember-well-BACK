@@ -84,7 +84,7 @@ app.use('/products', createProductsRouter({ productsModel: ProductModel, product
 app.use('/comments', createCommentsRouter({ commentsModel: CommentModel }));
 app.use('/orders', createOrdersRouter({ ordersModel: OrdersModel }));
 app.use('/orderProduct', createOrderProductRouter({ orderProductModel: OrderProductsModel }));
-app.use('/deceased', createDeceasedRouter({ deceasedModel: DeceasedModel }));
+app.use('/deceased', createDeceasedRouter({ deceasedModel: DeceasedModel, usersModel: UserModel }));
 app.use('/editionPermit', createEditionPermitRouter({ editionPermitModel: EditionPermitModel })); //VER COMO DAR/REVOCAR PERMISOS
 app.use('/deceasedFiles', createDeceasedFilesRouter({ deceasedFilesModel: DeceasedFilesModel }));
 app.use('/tributes', createTribureRouter({ tributeModel: TributeModel }));
