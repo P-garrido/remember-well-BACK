@@ -87,8 +87,8 @@ export class DeceasedController {
     const idUsu = req.params.idUsu;
 
     try {
-      const usu = await this.usersModel.findByPk({ id: idUsu });
-      const fall = await this.deceasedModel.findByPk({ id: idFall });
+      const usu = await this.usersModel.findOne({ where: { id: idUsu } });
+      const fall = await this.deceasedModel.findOne({ where: { id: idFall } });
       fall.removeUser(usu);
       res.json({ response: 'Editor eliminado' })
     }
