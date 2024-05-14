@@ -13,6 +13,7 @@ export const createOrdersRouter = ({ ordersModel }) => {
   ordersRouter.post('', validateToken, ordersController.create);
   ordersRouter.patch('/:id', validateToken, ordersController.update);
   ordersRouter.delete('/:id', validateToken, ordersController.delete);
+  ordersRouter.post('/payments', validateToken, ordersController.createPayment);
 
   return ordersRouter;
 }
