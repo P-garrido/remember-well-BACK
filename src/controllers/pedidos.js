@@ -3,6 +3,7 @@ import { OrderProductsModel } from "../models/linea-pedido.js";
 import { ProductModel } from "../models/productos.js";
 import { UserModel } from "../models/usuarios.js";
 import { MercadoPagoConfig, Preference } from 'mercadopago';
+import mercadopage from 'mercadopago'
 
 
 export class OrdersController {
@@ -92,9 +93,11 @@ export class OrdersController {
       const paymentRequest = await preference.create({
         body: {
           items: items,
-          notification_url: 'https://8d3c-181-110-50-156.ngrok-free.app/webhook',
+          // notification_url: 'https://cf55-181-110-50-156.ngrok-free.app/orders/webhook', //NO SE COMO SE USA
           back_urls: {
-            success: 'http://localhost:4200/paymentSuccess'
+            success: 'http://localhost:4200/paymentSuccess',
+            failure: 'http://localhost:4200/inicio',
+            pending: 'http://localhost:4200/inicio'
           }
         }
       });
@@ -105,6 +108,23 @@ export class OrdersController {
       res.status(500).json({ error: e.message })
     }
   }
+
+
+  // receiveWebhook = async (req, res) => { NO SE COMO SE USA
+
+  //   try {
+  //     const payment = req.query;
+  //     if (payment.type === "payment") {
+  //       const data = await mercadopage.payment.findById(payment["data.id"]);
+  //       console.log(data);
+  //     }
+
+  //     res.sendStatus(204);
+  //   } catch (error) {
+  //     console.log(error);
+  //     return res.status(500).json({ message: error.message });
+  //   }
+  // }
 
 
 
