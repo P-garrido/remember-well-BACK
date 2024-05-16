@@ -23,7 +23,8 @@ export class ProductsController {
           prodFiles.push({
             id: pf.id,
             idProd: pf.idProd,
-            fileUrl: `http://localhost:3000/images/${pf.fileUrl}`
+            fileUrl: `http://localhost:3000/images/${pf.fileUrl}`,
+            extention: pf.extention
           })
         })
         return {
@@ -52,7 +53,8 @@ export class ProductsController {
 
       const newFiles = [];
       for (const file of req.files) {
-        newFiles.push(await this.productFilesModel.create({ idProd: newProd.id, fileUrl: file.filename }));
+        const ext = file.originalname.split('.').pop();
+        newFiles.push(await this.productFilesModel.create({ idProd: newProd.id, fileUrl: file.filename, extention: ext }));
       }
       res.json({ newProd, newFiles });
     }
@@ -95,8 +97,9 @@ export class ProductsController {
       await this.productsModel.update({ name, description, price }, { where: { id } });
 
       for (const newFile of req.files) {
+        const ext = file.originalname.split('.').pop();
 
-        await this.productFilesModel.create({ idProd: id, fileUrl: newFile.filename });
+        await this.productFilesModel.create({ idProd: id, fileUrl: newFile.filename, extention: ext });
       }
       res.json({ response: 'Producto actualizado' })
 

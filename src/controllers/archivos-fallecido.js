@@ -17,7 +17,8 @@ export class DeceasedFilesController {
     try {
       const newFiles = [];
       for (const file of req.files) {
-        newFiles.push(await this.deceasedFilesModel.create({ idFall, fileUrl: file.filename }));
+        const ext = file.originalname.split('.').pop();
+        newFiles.push(await this.deceasedFilesModel.create({ idFall, fileUrl: file.filename, extention: ext }));
       }
       res.status(201).json(newFiles);
     }

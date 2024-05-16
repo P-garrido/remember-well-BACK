@@ -17,6 +17,10 @@ export const ProductFilesModel = sequelize.define('ProductFiles',
     fileUrl: {
       type: DataTypes.STRING,
       allowNull: false
+    },
+    extention: {
+      type: DataTypes.STRING,
+      allowNull: false
     }
   },
   {
