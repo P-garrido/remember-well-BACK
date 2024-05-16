@@ -97,7 +97,7 @@ export class ProductsController {
       await this.productsModel.update({ name, description, price }, { where: { id } });
 
       for (const newFile of req.files) {
-        const ext = file.originalname.split('.').pop();
+        const ext = newFile.originalname.split('.').pop();
 
         await this.productFilesModel.create({ idProd: id, fileUrl: newFile.filename, extention: ext });
       }
