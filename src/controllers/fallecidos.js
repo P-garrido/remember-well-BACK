@@ -40,7 +40,8 @@ export class DeceasedController {
           deceasedFiles.push({
             id: df.id,
             idFall: df.idFall,
-            fileUrl: `http://localhost:3000/images/${df.fileUrl}`
+            fileUrl: `http://localhost:3000/images/${df.fileUrl}`,
+            extention: df.extention
           })
         })
       }

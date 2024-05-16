@@ -17,6 +17,10 @@ export const DeceasedFilesModel = sequelize.define('DeceasedFiles',
     fileUrl: {
       type: DataTypes.STRING,
       allowNull: false
+    },
+    extention: {
+      type: DataTypes.STRING,
+      allowNull: false
     }
   },
   {
