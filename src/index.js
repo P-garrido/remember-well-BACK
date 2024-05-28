@@ -22,11 +22,29 @@ import { createEditionPermitRouter } from './routes/permisos-edicion.js';
 import { createDeceasedFilesRouter } from './routes/archivos-fallecido.js';
 import { createTribureRouter } from './routes/tributos.js';
 
+import path, { dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+
 
 const app = express();
 
 app.use(cors());
 app.use(json());
+
+
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+// Servir los archivos estáticos desde la carpeta dist
+app.use(express.static(path.join(__dirname, 'dist/remember-well-front')));
+
+
+
+
+
+
+
+
 app.use('/images', express.static('src/public'));
 config();
 
@@ -89,6 +107,10 @@ app.use('/editionPermit', createEditionPermitRouter({ editionPermitModel: Editio
 app.use('/deceasedFiles', createDeceasedFilesRouter({ deceasedFilesModel: DeceasedFilesModel }));
 app.use('/tributes', createTribureRouter({ tributeModel: TributeModel }));
 
+// Redirigir todas las peticiones al archivo index.html
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist/remember-well-front/index.html'));
+});
 
 
 const port = process.env.PORT;
