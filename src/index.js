@@ -116,6 +116,6 @@ app.get('*', (req, res) => {
 const port = process.env.PORT;
 
 //INICIO DE SERVIDOR
-app.listen(port, () => {
+app.listen(port, '0.0.0.0', () => {
   console.log("app listening on port", port)
 });
