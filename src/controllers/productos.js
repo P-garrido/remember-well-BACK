@@ -3,6 +3,10 @@ import fs from 'fs';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 
+import 'dotenv/config';
+
+const PORT = process.env.PORT
+
 
 export class ProductsController {
 
@@ -23,7 +27,7 @@ export class ProductsController {
           prodFiles.push({
             id: pf.id,
             idProd: pf.idProd,
-            fileUrl: `http://localhost:3000/images/${pf.fileUrl}`,
+            fileUrl: `http://localhost:${PORT}/images/${pf.fileUrl}`,
             extention: pf.extention
           })
         })

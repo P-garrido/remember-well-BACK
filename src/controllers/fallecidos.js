@@ -5,6 +5,9 @@ import fs from 'fs';
 import path, { dirname } from 'path';
 import { where } from "sequelize";
 import { fileURLToPath } from 'url';
+import 'dotenv/config';
+
+const PORT = process.env.PORT
 
 
 
@@ -40,7 +43,7 @@ export class DeceasedController {
           deceasedFiles.push({
             id: df.id,
             idFall: df.idFall,
-            fileUrl: `http://localhost:3000/images/${df.fileUrl}`,
+            fileUrl: `http://localhost:${PORT}/images/${df.fileUrl}`,
             extention: df.extention
           })
         })
@@ -53,7 +56,7 @@ export class DeceasedController {
         deathDate: fallecido.deathDate,
         aboutMe: fallecido.aboutMe,
         playlist: fallecido.playlist,
-        profilePicUrl: `http://localhost:3000/images/${fallecido.profilePicUrl}`,
+        profilePicUrl: `http://localhost:${PORT}/images/${fallecido.profilePicUrl}`,
         DeceasedFiles: deceasedFiles,
         Tributes: fallecido.Tributes,
         Users: fallecido.Users
