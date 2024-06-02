@@ -21,9 +21,10 @@ import { createDeceasedRouter } from './routes/fallecidos.js';
 import { createEditionPermitRouter } from './routes/permisos-edicion.js';
 import { createDeceasedFilesRouter } from './routes/archivos-fallecido.js';
 import { createTribureRouter } from './routes/tributos.js';
-
+import https from 'https';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
+import fs from 'fs';
 
 
 
@@ -116,6 +117,13 @@ app.get('*', (req, res) => {
 const port = process.env.PORT;
 
 //INICIO DE SERVIDOR
-app.listen(port, '0.0.0.0', () => {
+
+const sslServer = https.createServer({
+  key: fs.readFileSync(path.join(__dirname, 'cert', 'key.pem')),
+  cert: fs.readFileSync(path.join(__dirname, 'cert', 'cert.pem'))
+}, app);
+
+
+sslServer.listen(port, '0.0.0.0', () => {
   console.log("app listening on port", port)
 });
