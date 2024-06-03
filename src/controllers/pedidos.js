@@ -3,10 +3,14 @@ import { OrderProductsModel } from "../models/linea-pedido.js";
 import { ProductModel } from "../models/productos.js";
 import { UserModel } from "../models/usuarios.js";
 import { MercadoPagoConfig, Preference } from 'mercadopago';
+import { config } from 'dotenv';
+import { or } from "sequelize";
+import { DeceasedModel } from "../models/fallecidos.js";
 
+config();
 
 const client = new MercadoPagoConfig({
-  accessToken: 'APP_USR-7841453800054411-032312-ae524ed295d1ebe14b339fd3974ab801-1741049380'
+  accessToken: process.env.MP_ACCESS_TOKEN,
 });
 
 
@@ -77,36 +81,48 @@ export class OrdersController {
 
   createPayment = async (req, res) => {
 
-
-
+    console.log(req.body)
+    const { idUser, cart, province, city, zipCode, address, floor, appartament } = req.body;
 
     try {
 
+      const items = [];
+      let total = 0;
+
+      req.body.cart.forEach((lp) => {
+        items.push({
+          id: lp.product.id,
+          title: lp.product.name,
+          description: lp.product.description,
+          unit_price: Number(lp.product.price),
+          quantity: Number(lp.quantity),
+          currency_id: 'ARS'
+        });
+        total += lp.product.price * lp.quantity;
+      });
+
+      const body = {
+        items: items,
+        back_urls: {
+          success: 'http://localhost:4200/paymentSuccess',
+          failure: 'http://localhost:4200/inicio',
+          pending: 'http://localhost:4200/productos'
+        },
+        auto_return: 'approved',
+        notification_url: 'https://039c-181-110-48-149.ngrok-free.app/orders/webhook', //CAMBIAR CADA VEZ Q INICIO NGROK
+      };
+
       const preference = new Preference(client);
 
-      const items = [];
+      const result = await preference.create({ body });
 
-      req.body.forEach((lp) => {
-        items.push({
-          title: lp.product.name,
-          unit_price: parseInt(lp.product.price),
-          quantity: parseInt(lp.quantity),
-          currency_id: 'ARS'
-        })
+
+      const ord = await this.ordersModel.create({ paymentId: result.id, date: new Date(), idUser, total: total, province, city, zipCode, address, floor, appartament, delivered: false, payed: false })
+      items.forEach(async (item) => {
+        await OrderProductsModel.create({ idPed: ord.id, idProd: item.id, cantidad: item.quantity });
       });
 
-      const paymentRequest = await preference.create({
-        body: {
-          items: items,
-          notification_url: 'https://3c16-181-110-48-149.ngrok-free.app/orders/webhook', //NO SE COMO SE USA
-          back_urls: {
-            success: 'http://localhost:4200/paymentSuccess',
-            failure: 'http://localhost:4200/inicio',
-            pending: 'http://localhost:4200/inicio'
-          }
-        },
-      });
-      res.json(paymentRequest);
+      res.json(result);
     }
     catch (e) {
       console.log(e)
@@ -117,26 +133,76 @@ export class OrdersController {
 
   receiveWebhook = async (req, res) => {
 
+
+    const topic = req.query.topic;
+
     try {
 
-
-
-      if (req.query.topic === 'payment') {
-        console.log('pago')
+      var payment;
+      var merchantOrder;
+      switch (topic) {
+        case 'payment':
+          const paymentId = req.query.id;
+          payment = await fetch('https://api.mercadopago.com/v1/payments/' + paymentId, {
+            method: 'GET',
+            headers: {
+              'Authorization': 'Bearer ' + process.env.MP_ACCESS_TOKEN
+            }
+          });
+          if (payment.ok) {
+            const data = await payment.json();
+            merchantOrder = await fetch('https://api.mercadopago.com/merchant_orders/' + data.order.id, {
+              method: 'GET',
+              headers: {
+                'Authorization': 'Bearer ' + process.env.MP_ACCESS_TOKEN
+              }
+            });
+          }
+          break;
+        case 'merchant_order': //SI FUNCIONA ASÍ BORRARLO
+          // const orderId = req.query.id;
+          // merchantOrder = await fetch('https://api.mercadopago.com/merchant_orders/' + orderId, {
+          //   method: 'GET',
+          //   headers: {
+          //     'Authorization': 'Bearer ' + process.env.MP_ACCESS_TOKEN
+          //   }
+          // });
+          break;
       }
 
+      if (merchantOrder) {
+        const data = await merchantOrder.json();
+        console.log(data)
 
-      res.sendStatus(204);
-    } catch (error) {
-      console.log(error);
-      return res.status(500).json({ message: error.message });
+        var paidAmount = 0;
+        data.payments.forEach((payment) => {
+          if (payment.status === 'approved') {
+            paidAmount += payment.transaction_amount;
+          }
+        });
+
+        if (paidAmount >= data.total_amount && data.status === 'closed') {
+          console.log('Pago completo')
+          console.log(data)
+          //Actualizar pedido
+          const order = await this.ordersModel.findOne({ where: { paymentId: data.preference_id } });
+          await this.ordersModel.update({ payed: true }, { where: { paymentId: data.preference_id } });
+
+          const newFallecido = await DeceasedModel.create({ idOwner: order.idUser });
+          const owner = await UserModel.findOne({ where: { id: order.idUser } });
+          newFallecido.addUser(owner);
+
+        } //TENGO QUE BORRAR EL PEDIDO EN EL FRONT SI NO SE FAILURE
+
+        res.sendStatus(200);
+
+      }
+    }
+    catch (e) {
+      console.log(e)
+      res.status(500).json({ error: e.message })
     }
   }
 
-
-
-
-
-
-
 }
+

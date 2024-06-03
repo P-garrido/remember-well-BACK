@@ -12,6 +12,10 @@ export const OrdersModel = sequelize.define(
       autoIncrement: true,
       primaryKey: true
     },
+    paymentId: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
     idUser: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -51,6 +55,11 @@ export const OrdersModel = sequelize.define(
       allowNull: true
     },
     delivered: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
+    },
+    payed: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false
