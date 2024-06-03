@@ -3,7 +3,13 @@ import { OrderProductsModel } from "../models/linea-pedido.js";
 import { ProductModel } from "../models/productos.js";
 import { UserModel } from "../models/usuarios.js";
 import { MercadoPagoConfig, Preference } from 'mercadopago';
-import mercadopage from 'mercadopago'
+
+
+const client = new MercadoPagoConfig({
+  accessToken: 'APP_USR-7841453800054411-032312-ae524ed295d1ebe14b339fd3974ab801-1741049380'
+});
+
+
 
 
 export class OrdersController {
@@ -72,13 +78,11 @@ export class OrdersController {
   createPayment = async (req, res) => {
 
 
-    const client = new MercadoPagoConfig({
-      accessToken: 'APP_USR-7841453800054411-032312-ae524ed295d1ebe14b339fd3974ab801-1741049380'
-    });
 
-    const preference = new Preference(client);
 
     try {
+
+      const preference = new Preference(client);
 
       const items = [];
 
@@ -87,19 +91,20 @@ export class OrdersController {
           title: lp.product.name,
           unit_price: parseInt(lp.product.price),
           quantity: parseInt(lp.quantity),
+          currency_id: 'ARS'
         })
-      })
+      });
 
       const paymentRequest = await preference.create({
         body: {
           items: items,
-          // notification_url: 'https://cf55-181-110-50-156.ngrok-free.app/orders/webhook', //NO SE COMO SE USA
+          notification_url: 'https://3c16-181-110-48-149.ngrok-free.app/orders/webhook', //NO SE COMO SE USA
           back_urls: {
             success: 'http://localhost:4200/paymentSuccess',
             failure: 'http://localhost:4200/inicio',
             pending: 'http://localhost:4200/inicio'
           }
-        }
+        },
       });
       res.json(paymentRequest);
     }
@@ -110,21 +115,23 @@ export class OrdersController {
   }
 
 
-  // receiveWebhook = async (req, res) => { NO SE COMO SE USA
+  receiveWebhook = async (req, res) => {
 
-  //   try {
-  //     const payment = req.query;
-  //     if (payment.type === "payment") {
-  //       const data = await mercadopage.payment.findById(payment["data.id"]);
-  //       console.log(data);
-  //     }
+    try {
 
-  //     res.sendStatus(204);
-  //   } catch (error) {
-  //     console.log(error);
-  //     return res.status(500).json({ message: error.message });
-  //   }
-  // }
+
+
+      if (req.query.topic === 'payment') {
+        console.log('pago')
+      }
+
+
+      res.sendStatus(204);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ message: error.message });
+    }
+  }
 
 
 

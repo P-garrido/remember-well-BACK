@@ -14,6 +14,7 @@ export const createOrdersRouter = ({ ordersModel }) => {
   ordersRouter.patch('/:id', validateToken, ordersController.update);
   ordersRouter.delete('/:id', validateToken, ordersController.delete);
   ordersRouter.post('/payments', validateToken, ordersController.createPayment);
+  ordersRouter.post('/webhook', ordersController.receiveWebhook);
 
   return ordersRouter;
 }
