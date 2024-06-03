@@ -100,10 +100,10 @@ export class OrdersController {
         back_urls: {
           success: 'http://localhost:4200/paymentSuccess',
           failure: 'http://localhost:4200/inicio',
-          pending: 'http://localhost:4200/inicio'
+          pending: 'http://localhost:4200/productos'
         },
         auto_return: 'approved',
-        notification_url: 'https://8448-181-110-48-149.ngrok-free.app/orders/webhook', //CAMBIAR CADA VEZ Q INICIO NGROK
+        notification_url: 'https://039c-181-110-48-149.ngrok-free.app/orders/webhook', //CAMBIAR CADA VEZ Q INICIO NGROK
       };
 
       const preference = new Preference(client);
@@ -150,18 +150,19 @@ export class OrdersController {
           }
           break;
         case 'merchant_order':
-          const orderId = req.query.id;
-          merchantOrder = await fetch('https://api.mercadopago.com/merchant_orders/' + orderId, {
-            method: 'GET',
-            headers: {
-              'Authorization': 'Bearer ' + process.env.MP_ACCESS_TOKEN
-            }
-          });
+          // const orderId = req.query.id;
+          // merchantOrder = await fetch('https://api.mercadopago.com/merchant_orders/' + orderId, {
+          //   method: 'GET',
+          //   headers: {
+          //     'Authorization': 'Bearer ' + process.env.MP_ACCESS_TOKEN
+          //   }
+          // });
           break;
       }
 
       if (merchantOrder) {
         const data = await merchantOrder.json();
+
         var paidAmount = 0;
         data.payments.forEach((payment) => {
           if (payment.status === 'approved') {
@@ -169,10 +170,14 @@ export class OrdersController {
           }
         });
 
+
         if (paidAmount >= data.total_amount && data.status === 'closed') {
           console.log('Pago completo')
-          console.log(data);
           //Actualizar pedido
+        }
+        else if (data.order_status == 'payment_in_process') {
+
+          console.log('Pago en proceso')
         }
         else {
           console.log('Pago incompleto')
