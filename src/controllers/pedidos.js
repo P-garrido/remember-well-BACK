@@ -188,7 +188,9 @@ export class OrdersController {
           const order = await this.ordersModel.findOne({ where: { paymentId: data.preference_id } });
           await this.ordersModel.update({ payed: true }, { where: { paymentId: data.preference_id } });
 
-          await DeceasedModel.create({ idOwner: order.idUser })
+          const newFallecido = await DeceasedModel.create({ idOwner: order.idUser });
+          const owner = await UserModel.findOne({ where: { id: order.idUser } });
+          newFallecido.addUser(owner);
 
         } //TENGO QUE BORRAR EL PEDIDO EN EL FRONT SI NO SE FAILURE
 
