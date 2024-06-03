@@ -5,6 +5,7 @@ import { UserModel } from "../models/usuarios.js";
 import { MercadoPagoConfig, Preference } from 'mercadopago';
 import { config } from 'dotenv';
 import { or } from "sequelize";
+import { DeceasedModel } from "../models/fallecidos.js";
 
 config();
 
@@ -80,11 +81,15 @@ export class OrdersController {
 
   createPayment = async (req, res) => {
 
+    console.log(req.body)
+    const { idUser, cart, province, city, zipCode, address, floor, appartament } = req.body;
+
     try {
 
       const items = [];
+      let total = 0;
 
-      req.body.forEach((lp) => {
+      req.body.cart.forEach((lp) => {
         items.push({
           id: lp.product.id,
           title: lp.product.name,
@@ -92,7 +97,8 @@ export class OrdersController {
           unit_price: Number(lp.product.price),
           quantity: Number(lp.quantity),
           currency_id: 'ARS'
-        })
+        });
+        total += lp.product.price * lp.quantity;
       });
 
       const body = {
@@ -111,6 +117,10 @@ export class OrdersController {
       const result = await preference.create({ body });
 
 
+      const ord = await this.ordersModel.create({ paymentId: result.id, date: new Date(), idUser, total: total, province, city, zipCode, address, floor, appartament, delivered: false, payed: false })
+      items.forEach(async (item) => {
+        await OrderProductsModel.create({ idPed: ord.id, idProd: item.id, cantidad: item.quantity });
+      });
 
       res.json(result);
     }
@@ -149,7 +159,7 @@ export class OrdersController {
             });
           }
           break;
-        case 'merchant_order':
+        case 'merchant_order': //SI FUNCIONA ASÍ BORRARLO
           // const orderId = req.query.id;
           // merchantOrder = await fetch('https://api.mercadopago.com/merchant_orders/' + orderId, {
           //   method: 'GET',
@@ -162,6 +172,7 @@ export class OrdersController {
 
       if (merchantOrder) {
         const data = await merchantOrder.json();
+        console.log(data)
 
         var paidAmount = 0;
         data.payments.forEach((payment) => {
@@ -170,18 +181,16 @@ export class OrdersController {
           }
         });
 
-
         if (paidAmount >= data.total_amount && data.status === 'closed') {
           console.log('Pago completo')
+          console.log(data)
           //Actualizar pedido
-        }
-        else if (data.order_status == 'payment_in_process') {
+          const order = await this.ordersModel.findOne({ where: { paymentId: data.preference_id } });
+          await this.ordersModel.update({ payed: true }, { where: { paymentId: data.preference_id } });
 
-          console.log('Pago en proceso')
-        }
-        else {
-          console.log('Pago incompleto')
-        }
+          await DeceasedModel.create({ idOwner: order.idUser })
+
+        } //TENGO QUE BORRAR EL PEDIDO EN EL FRONT SI NO SE FAILURE
 
         res.sendStatus(200);
 
