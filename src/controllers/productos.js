@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url';
 import 'dotenv/config';
 
 const PORT = process.env.PORT
+const URL = process.env.URL
 
 
 export class ProductsController {
@@ -27,7 +28,7 @@ export class ProductsController {
           prodFiles.push({
             id: pf.id,
             idProd: pf.idProd,
-            fileUrl: `http://localhost:${PORT}/images/${pf.fileUrl}`,
+            fileUrl: `http://${URL}${PORT}/images/${pf.fileUrl}`,
             extention: pf.extention
           })
         })

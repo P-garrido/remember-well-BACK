@@ -8,6 +8,7 @@ import { fileURLToPath } from 'url';
 import 'dotenv/config';
 
 const PORT = process.env.PORT
+const URL = process.env.URL
 
 
 
@@ -43,7 +44,7 @@ export class DeceasedController {
           deceasedFiles.push({
             id: df.id,
             idFall: df.idFall,
-            fileUrl: `http://localhost:${PORT}/images/${df.fileUrl}`,
+            fileUrl: `http://${URL}${PORT}/images/${df.fileUrl}`,
             extention: df.extention
           })
         })
@@ -56,7 +57,7 @@ export class DeceasedController {
         deathDate: fallecido.deathDate,
         aboutMe: fallecido.aboutMe,
         playlist: fallecido.playlist,
-        profilePicUrl: `http://localhost:${PORT}/images/${fallecido.profilePicUrl}`,
+        profilePicUrl: `http://${URL}${PORT}/images/${fallecido.profilePicUrl}`,
         DeceasedFiles: deceasedFiles,
         Tributes: fallecido.Tributes,
         Users: fallecido.Users
