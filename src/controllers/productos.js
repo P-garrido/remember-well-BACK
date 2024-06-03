@@ -28,7 +28,7 @@ export class ProductsController {
           prodFiles.push({
             id: pf.id,
             idProd: pf.idProd,
-            fileUrl: `http://${URL}${PORT}/images/${pf.fileUrl}`,
+            fileUrl: `http://${URL}/images/${pf.fileUrl}`,
             extention: pf.extention
           })
         })
