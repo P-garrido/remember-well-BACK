@@ -9,6 +9,8 @@ import { DeceasedModel } from "../models/fallecidos.js";
 
 config();
 
+const URL = process.env.URL;
+
 const client = new MercadoPagoConfig({
   accessToken: process.env.MP_ACCESS_TOKEN,
 });
@@ -27,6 +29,18 @@ export class OrdersController {
 
     try {
       const pedidos = await this.ordersModel.findAll({ include: [{ model: OrderProductsModel, include: { model: ProductModel } }, { model: UserModel }] }); //CHEQUEAR Q OP TRAIGA SU PRODUCTO
+      res.json(pedidos);
+    }
+    catch (e) {
+      res.status(500).json({ error: e.message })
+    }
+  }
+
+  getFromUser = async (req, res) => {
+    const id = req.params.idUser;
+
+    try {
+      const pedidos = await this.ordersModel.findAll({ where: { idUser: id } });
       res.json(pedidos);
     }
     catch (e) {
@@ -104,9 +118,9 @@ export class OrdersController {
       const body = {
         items: items,
         back_urls: {
-          success: 'http://localhost:4200/paymentSuccess',
-          failure: 'http://localhost:4200/inicio',
-          pending: 'http://localhost:4200/productos'
+          success: `${URL}/paymentSuccess`,
+          failure: `${URL}/paymentFailure`,
+          pending: `${URL}/paymentPending`
         },
         auto_return: 'approved',
         notification_url: 'https://039c-181-110-48-149.ngrok-free.app/orders/webhook', //CAMBIAR CADA VEZ Q INICIO NGROK
