@@ -117,12 +117,12 @@ export class OrdersController {
       const body = {
         items: items,
         back_urls: {
-          success: `http://localhost:4200/paymentSuccess`,
-          failure: `http://localhost:4200/paymentFailure`,
-          pending: `http://localhost:4200/paymentPending`
+          success: `${URL}/paymentSuccess`,
+          failure: `${URL}/paymentFailure`,
+          pending: `${URL}/paymentPending`
         },
         auto_return: 'approved',
-        notification_url: 'https://3806-190-210-128-137.ngrok-free.app/orders/webhook', //CAMBIAR CADA VEZ Q INICIO NGROK
+        notification_url: `${URL}/orders/webhook`, //CAMBIAR CADA VEZ Q INICIO NGROK
       };
 
       const preference = new Preference(client);
