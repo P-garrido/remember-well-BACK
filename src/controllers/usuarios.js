@@ -4,6 +4,9 @@ import { DeceasedModel } from "../models/fallecidos.js";
 import { DeceasedFilesModel } from "../models/archivos-fallecido.js";
 import { TributeModel } from "../models/tributos.js";
 import { UserModel } from "../models/usuarios.js";
+import { OrdersModel } from "../models/pedidos.js";
+import { OrderProductsModel } from "../models/linea-pedido.js";
+import { ProductModel } from "../models/productos.js";
 
 
 export class UsersController {
@@ -101,7 +104,7 @@ export class UsersController {
 
     const { mail, password } = req.body;
     try {
-      const user = await this.usersModel.findOne({ include: { model: DeceasedModel, include: [{ model: DeceasedFilesModel }, { model: UserModel }, { model: TributeModel }] }, where: { mail, password } });
+      const user = await this.usersModel.findOne({ include: [{ model: OrdersModel, include: [{ model: OrderProductsModel, include: { model: ProductModel } }, { model: UserModel }] }, { model: DeceasedModel, include: [{ model: DeceasedFilesModel }, { model: UserModel }, { model: TributeModel }] }], where: { mail, password } });
 
       if (user) {
         const payload = {
@@ -116,6 +119,7 @@ export class UsersController {
     }
 
     catch (err) {
+      console.log(err)
       res.status(500).json({ error: err })
     }
 
