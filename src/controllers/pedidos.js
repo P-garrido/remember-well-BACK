@@ -95,7 +95,6 @@ export class OrdersController {
 
   createPayment = async (req, res) => {
 
-    console.log(req.body)
     const { idUser, cart, province, city, zipCode, address, floor, appartament } = req.body;
 
     try {
@@ -103,7 +102,7 @@ export class OrdersController {
       const items = [];
       let total = 0;
 
-      req.body.cart.forEach((lp) => {
+      cart.forEach((lp) => {
         items.push({
           id: lp.product.id,
           title: lp.product.name,
@@ -118,12 +117,12 @@ export class OrdersController {
       const body = {
         items: items,
         back_urls: {
-          success: `${URL}/paymentSuccess`,
-          failure: `${URL}/paymentFailure`,
-          pending: `${URL}/paymentPending`
+          success: `http://localhost:4200/paymentSuccess`,
+          failure: `http://localhost:4200/paymentFailure`,
+          pending: `http://localhost:4200/paymentPending`
         },
         auto_return: 'approved',
-        notification_url: 'https://039c-181-110-48-149.ngrok-free.app/orders/webhook', //CAMBIAR CADA VEZ Q INICIO NGROK
+        notification_url: 'https://3806-190-210-128-137.ngrok-free.app/orders/webhook', //CAMBIAR CADA VEZ Q INICIO NGROK
       };
 
       const preference = new Preference(client);
@@ -131,7 +130,7 @@ export class OrdersController {
       const result = await preference.create({ body });
 
 
-      const ord = await this.ordersModel.create({ paymentId: result.id, date: new Date(), idUser, total: total, province, city, zipCode, address, floor, appartament, delivered: false, payed: false })
+      const ord = await this.ordersModel.create({ paymentId: result.id, date: new Date(), idUser, total: total, province, city, zipCode, address, floor, appartament, delivered: false })
       items.forEach(async (item) => {
         await OrderProductsModel.create({ idPed: ord.id, idProd: item.id, cantidad: item.quantity });
       });
@@ -186,7 +185,6 @@ export class OrdersController {
 
       if (merchantOrder) {
         const data = await merchantOrder.json();
-        console.log(data)
 
         var paidAmount = 0;
         data.payments.forEach((payment) => {
@@ -197,17 +195,24 @@ export class OrdersController {
 
         if (paidAmount >= data.total_amount && data.status === 'closed') {
           console.log('Pago completo')
-          console.log(data)
           //Actualizar pedido
           const order = await this.ordersModel.findOne({ where: { paymentId: data.preference_id } });
-          await this.ordersModel.update({ payed: true }, { where: { paymentId: data.preference_id } });
+          await this.ordersModel.update({ payed: 'Pagado' }, { where: { paymentId: data.preference_id } });
 
           const newFallecido = await DeceasedModel.create({ idOwner: order.idUser });
           const owner = await UserModel.findOne({ where: { id: order.idUser } });
           newFallecido.addUser(owner);
 
-        } //TENGO QUE BORRAR EL PEDIDO EN EL FRONT SI NO SE FAILURE
+        }
+        else if (data.order_status == 'payment_in_process') {
 
+          console.log('Pago en proceso')
+          const order = await this.ordersModel.findOne({ where: { paymentId: data.preference_id } });
+          await this.ordersModel.update({ payed: 'En proceso' }, { where: { paymentId: data.preference_id } });
+        }
+        else {
+          console.log('Pago incompleto')
+        }
         res.sendStatus(200);
 
       }

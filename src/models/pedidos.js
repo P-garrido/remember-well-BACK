@@ -60,9 +60,9 @@ export const OrdersModel = sequelize.define(
       defaultValue: false
     },
     payed: {
-      type: DataTypes.BOOLEAN,
+      type: DataTypes.STRING,
       allowNull: false,
-      defaultValue: false
+      defaultValue: 'No pagado'
     }
   },
   {
