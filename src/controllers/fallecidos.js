@@ -44,7 +44,7 @@ export class DeceasedController {
           deceasedFiles.push({
             id: df.id,
             idFall: df.idFall,
-            fileUrl: `http://${URL}/images/${df.fileUrl}`,
+            fileUrl: `${URL}/images/${df.fileUrl}`,
             extention: df.extention
           })
         })
@@ -57,7 +57,7 @@ export class DeceasedController {
         deathDate: fallecido.deathDate,
         aboutMe: fallecido.aboutMe,
         playlist: fallecido.playlist,
-        profilePicUrl: `http://${URL}/images/${fallecido.profilePicUrl}`,
+        profilePicUrl: `${URL}/images/${fallecido.profilePicUrl}`,
         DeceasedFiles: deceasedFiles,
         Tributes: fallecido.Tributes,
         Users: fallecido.Users
