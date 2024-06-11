@@ -148,6 +148,7 @@ export class OrdersController {
 
 
     const topic = req.query.topic;
+    console.log(req.query)
 
     try {
 
@@ -201,6 +202,8 @@ export class OrdersController {
 
           const newFallecido = await DeceasedModel.create({ idOwner: order.idUser });
           const owner = await UserModel.findOne({ where: { id: order.idUser } });
+          console.log(owner)
+          console.log(newFallecido)
           newFallecido.addUser(owner);
 
         }

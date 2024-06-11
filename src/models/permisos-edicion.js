@@ -20,6 +20,6 @@ export const EditionPermitModel = sequelize.define('EditionPermit',
     }
   },
   {
-    tableName: 'permiso-edicion',
+    tableName: 'permiso_edicion',
     timestamps: false
   })

@@ -24,7 +24,7 @@ export const DeceasedFilesModel = sequelize.define('DeceasedFiles',
     }
   },
   {
-    tableName: 'archivos-fallecido',
+    tableName: 'archivos_fallecido',
     timestamps: false
   });
 

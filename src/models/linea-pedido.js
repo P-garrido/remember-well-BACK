@@ -25,7 +25,7 @@ export const OrderProductsModel = sequelize.define(
     }
   },
   {
-    tableName: 'linea-pedidos',
+    tableName: 'linea_pedidos',
     timestamps: false
   }
 );

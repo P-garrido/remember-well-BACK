@@ -24,6 +24,6 @@ export const ProductFilesModel = sequelize.define('ProductFiles',
     }
   },
   {
-    tableName: 'archivos-producto',
+    tableName: 'archivos_producto',
     timestamps: false
   })
