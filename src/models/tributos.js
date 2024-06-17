@@ -14,6 +14,11 @@ export const TributeModel = sequelize.define('Tribute',
       type: DataTypes.INTEGER,
       allowNull: false
     },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: 'Anónimo'
+    },
     text: {
       type: DataTypes.STRING,
       allowNull: false

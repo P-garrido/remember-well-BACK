@@ -122,7 +122,7 @@ export class OrdersController {
           pending: `${URL}/paymentPending`
         },
         auto_return: 'approved',
-        notification_url: `${URL}/orders/webhook`, //CAMBIAR CADA VEZ Q INICIO NGROK
+        notification_url: `https://25f0-181-110-48-211.ngrok-free.app/orders/webhook`, //CAMBIAR CADA VEZ Q INICIO NGROK
       };
 
       const preference = new Preference(client);
@@ -202,8 +202,6 @@ export class OrdersController {
 
           const newFallecido = await DeceasedModel.create({ idOwner: order.idUser });
           const owner = await UserModel.findOne({ where: { id: order.idUser } });
-          console.log(owner)
-          console.log(newFallecido)
           newFallecido.addUser(owner);
 
         }

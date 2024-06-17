@@ -19,6 +19,10 @@ export const DeceasedModel = sequelize.define('Deceased',
       type: DataTypes.STRING,
       allowNull: true
     },
+    birthDate: {
+      type: DataTypes.DATE,
+      allowNull: true
+    },
     deathDate: {
       type: DataTypes.DATE,
       allowNull: true
@@ -27,7 +31,11 @@ export const DeceasedModel = sequelize.define('Deceased',
       type: DataTypes.STRING,
       allowNull: true
     },
-    playlist: {
+    link: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    backPicUrl: {
       type: DataTypes.STRING,
       allowNull: true
     },

@@ -22,10 +22,10 @@ export class TributeController {
 
 
   create = async (req, res) => {
-    const { idFall, text } = req.body;
+    const { idFall, text, name } = req.body;
 
     try {
-      const newTributo = await this.tributeModel.create({ idFall, text });
+      const newTributo = await this.tributeModel.create({ idFall, text, name });
       res.status(201).json(newTributo);
     }
     catch (e) {
