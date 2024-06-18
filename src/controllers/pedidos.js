@@ -122,7 +122,7 @@ export class OrdersController {
           pending: `${URL}/paymentPending`
         },
         auto_return: 'approved',
-        notification_url: `${URL}/orders/webhook`, //CAMBIAR CADA VEZ Q INICIO NGROK
+        notification_url: `https://244a-181-110-48-211.ngrok-free.app/orders/webhook`, //CAMBIAR CADA VEZ Q INICIO NGROK
       };
 
       const preference = new Preference(client);
