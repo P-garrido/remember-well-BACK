@@ -202,8 +202,6 @@ export class OrdersController {
 
           const newFallecido = await DeceasedModel.create({ idOwner: order.idUser });
           const owner = await UserModel.findOne({ where: { id: order.idUser } });
-          console.log(owner)
-          console.log(newFallecido)
           newFallecido.addUser(owner);
 
         }
