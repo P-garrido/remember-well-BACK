@@ -118,17 +118,17 @@ const port = process.env.PORT;
 
 //INICIO DE SERVIDOR
 
-// const sslServer = https.createServer({
-//   key: fs.readFileSync(path.join(__dirname, 'cert', 'key.pem')),
-//   cert: fs.readFileSync(path.join(__dirname, 'cert', 'cert.pem'))
-// }, app);
+const sslServer = https.createServer({
+  key: fs.readFileSync(path.join(__dirname, 'cert', 'key.pem')),
+  cert: fs.readFileSync(path.join(__dirname, 'cert', 'cert.pem'))
+}, app);
 
 
-// sslServer.listen(port, '0.0.0.0', () => {
-//   console.log("app listening on port", port)
-// });
-
-
-app.listen(port, () => {
+sslServer.listen(port, '0.0.0.0', () => {
   console.log("app listening on port", port)
 });
+
+
+// app.listen(port, () => {
+//   console.log("app listening on port", port)
+// });
