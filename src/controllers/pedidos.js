@@ -130,7 +130,7 @@ export class OrdersController {
       const result = await preference.create({ body });
 
 
-      const ord = await this.ordersModel.create({ paymentId: result.id, date: new Date(), idUser, total: total, province, city, zipCode, address, floor, appartament, delivered: false })
+      const ord = await this.ordersModel.create({ paymentId: result.id, date: new Date(), idUser, total, province, city, zipCode, address, floor, appartament, delivered: false })
       items.forEach(async (item) => {
         await OrderProductsModel.create({ idPed: ord.id, idProd: item.id, cantidad: item.quantity });
       });
@@ -148,7 +148,6 @@ export class OrdersController {
 
 
     const topic = req.query.topic;
-    console.log(req.query)
 
     try {
 
@@ -203,6 +202,7 @@ export class OrdersController {
           const newFallecido = await DeceasedModel.create({ idOwner: order.idUser });
           const owner = await UserModel.findOne({ where: { id: order.idUser } });
           newFallecido.addUser(owner);
+          await order.update({ idFall: newFallecido.id });
 
         }
         else if (data.order_status == 'payment_in_process') {

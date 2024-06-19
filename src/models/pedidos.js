@@ -21,6 +21,10 @@ export const OrdersModel = sequelize.define(
       allowNull: false,
       autoIncrement: false
     },
+    idFall: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
     date: {
       type: DataTypes.DATE,
       allowNull: false,

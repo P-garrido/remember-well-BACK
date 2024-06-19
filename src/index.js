@@ -77,6 +77,14 @@ ProductModel.hasMany(ProductFilesModel, { foreignKey: 'idProd', onDelete: 'CASCA
 ProductFilesModel.belongsTo(ProductModel, { foreignKey: 'idProd' });
 
 
+//Habría que hacer bien esta relacion pero capaz me alcanza con agregar idFall a la tabla de pedidos a mano
+// OrdersModel.hasOne(DeceasedModel, { foreignKey: 'idPed', onDelete: 'CASCADE' });
+// DeceasedModel.belongsTo(OrdersModel, { foreignKey: 'idPed' });
+
+
+
+
+
 
 
 
