@@ -57,7 +57,6 @@ export class DeceasedController {
         birthDate: fallecido.birthDate,
         deathDate: fallecido.deathDate,
         aboutMe: fallecido.aboutMe,
-        link: fallecido.link,
         backPicUrl: `${URL}/images/${fallecido.backPicUrl}`,
         profilePicUrl: `${URL}/images/${fallecido.profilePicUrl}`,
         DeceasedFiles: deceasedFiles,
@@ -109,12 +108,12 @@ export class DeceasedController {
 
   create = async (req, res) => {
 
-    const { idOwner, name, birthDate, deathDate, aboutMe, link, backPicUrl, profilePicUrl } = req.body;
+    const { idOwner, name, birthDate, deathDate, aboutMe, backPicUrl, profilePicUrl } = req.body;
 
 
     try {
       const owner = await UserModel.findOne({ where: { id: idOwner } });
-      const newFallecido = await this.deceasedModel.create({ idOwner, name, birthDate, deathDate, aboutMe, link, backPicUrl, profilePicUrl });
+      const newFallecido = await this.deceasedModel.create({ idOwner, name, birthDate, deathDate, aboutMe, backPicUrl, profilePicUrl });
 
       newFallecido.addUser(owner);
       res.status(201).json(newFallecido);
@@ -189,7 +188,7 @@ export class DeceasedController {
 
   update = async (req, res) => {
     const id = req.params.id;
-    let { name, birthDate, deathDate, aboutMe, link } = req.body;
+    let { name, birthDate, deathDate, aboutMe } = req.body;
 
     if (!deathDate) {
       deathDate = new Date();
@@ -237,7 +236,7 @@ export class DeceasedController {
         });
         backPicUrl = req.files.backPic[0].filename;
       }
-      await this.deceasedModel.update({ name, birthDate, deathDate, aboutMe, link, backPicUrl, profilePicUrl }, { where: { id } });
+      await this.deceasedModel.update({ name, birthDate, deathDate, aboutMe, backPicUrl, profilePicUrl }, { where: { id } });
       res.json("Perfil actualizado");
 
     }
