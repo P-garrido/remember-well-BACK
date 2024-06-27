@@ -28,7 +28,7 @@ export const DeceasedModel = sequelize.define('Deceased',
       allowNull: true
     },
     aboutMe: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT('medium'),
       allowNull: true
     },
     backPicUrl: {

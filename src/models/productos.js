@@ -14,7 +14,7 @@ export const ProductModel = sequelize.define(
       allowNull: false,
     },
     description: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT('medium'),
       allowNull: true,
     },
     price: {
